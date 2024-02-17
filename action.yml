@@ -1,6 +1,6 @@
-name: 'The name of your action here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
+name: 'fetch-remote-repository-files'
+description: 'Fetch files from a remote GitHub repository'
+author: 'Work-m8'
 
 # Add your action's branding here. This will appear on the GitHub Marketplace.
 branding:
@@ -9,15 +9,25 @@ branding:
 
 # Define your inputs here.
 inputs:
-  milliseconds:
-    description: 'Your input description here'
+  repository:
+    description: 'The Repository where to download the remote files from'
     required: true
-    default: '1000'
-
-# Define your outputs here.
-outputs:
-  time:
-    description: 'Your output description here'
+  organization:
+    description: 'The Organization of the repository where to download remote files from'
+    required: true
+  sha:
+    description: 'The sha of a commit or branch of the remote repository where the files are'
+  input_path:
+    description: 'The input path from the remote repository'
+    default: '/'
+    required: true
+  output_path:
+    description: 'The output path where to store the local files'
+    default: '/'
+  files:
+    description: "A list of files which needs to be downloaded. seperated by ','"
+  extensions:
+    description: "A list of extensions of files which needs to be downloaded. seperated by ','"
 
 runs:
   using: node20
