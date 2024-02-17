@@ -6871,13 +6871,16 @@ class GitHubDownloader {
     }
     getFileStructure(path, repository) {
         return new Promise((resolve, reject) => {
-            this.octokit.repos
-                .getContent({
+            const req = {
                 owner: repository.organization,
                 repo: repository.repository,
-                ref: repository.sha,
                 path: path
-            })
+            };
+            if (repository.sha) {
+                req.ref = repository.sha;
+            }
+            this.octokit.repos
+                .getContent(req)
                 .then(res => {
                 const dirs = res.data.map((node) => {
                     if (node.type === 'dir') {
@@ -6944,20 +6947,22 @@ async function run() {
         const OUTPUT_PATH = core.getInput('output_path');
         const FILES = core.getInput('files').split(',');
         const EXTENSIONS = core.getInput('extensions').split(',');
-        const downloader = new downloader_1.GitHubDownloader({
+        const options = {
+            GH_TOKEN: GH_TOKEN,
             repository: {
                 repository: REPOSITORY,
                 organization: ORGANIZATION,
-                sha: SHA
+                sha: SHA || undefined
             },
-            GH_TOKEN: GH_TOKEN,
             input_path: INPUT_PATH,
-            output_path: OUTPUT_PATH,
+            output_path: OUTPUT_PATH || undefined,
             filter: {
-                files: FILES,
-                extensions: EXTENSIONS
+                files: FILES || undefined,
+                extensions: EXTENSIONS || undefined
             }
-        });
+        };
+        core.debug(JSON.stringify(options));
+        const downloader = new downloader_1.GitHubDownloader(options);
         core.debug(`Starting to download files from ${ORGANIZATION}/${REPOSITORY}`);
         await downloader.downloadFolder();
         core.debug('Done downloading files');
