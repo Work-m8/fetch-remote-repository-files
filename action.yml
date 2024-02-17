@@ -19,7 +19,7 @@ inputs:
     description: 'The sha of a commit or branch of the remote repository where the files are'
   input_path:
     description: 'The input path from the remote repository'
-    default: '/'
+    default: ''
     required: true
   output_path:
     description: 'The output path where to store the local files'
