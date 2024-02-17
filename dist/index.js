@@ -6876,9 +6876,6 @@ class GitHubDownloader {
                 repo: repository.repository,
                 path: path
             };
-            if (repository.sha) {
-                req.ref = repository.sha;
-            }
             this.octokit.repos
                 .getContent(req)
                 .then(res => {
