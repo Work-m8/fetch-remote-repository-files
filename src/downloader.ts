@@ -1,4 +1,4 @@
-import { Octokit } from '@octokit/rest'
+import { Octokit, RestEndpointMethodTypes } from '@octokit/rest'
 
 import fs from 'fs'
 
@@ -109,13 +109,17 @@ export class GitHubDownloader {
     repository: Repository
   ): Promise<{ path: string; type: string; sha: string }[]> {
     return new Promise((resolve, reject) => {
-      this.octokit.repos
-        .getContent({
+      const req: RestEndpointMethodTypes['repos']['getContent']['parameters'] =
+        {
           owner: repository.organization,
           repo: repository.repository,
-          ref: repository.sha,
           path: path
-        })
+        }
+      if (repository.sha) {
+        req.ref = repository.sha
+      }
+      this.octokit.repos
+        .getContent(req)
         .then(res => {
           const dirs = (res.data as unknown[]).map((node: any) => {
             if (node.type === 'dir') {
