@@ -13,33 +13,20 @@ export async function run(): Promise<void> {
     const FILES: string[] = core.getInput('files').split(',')
     const EXTENSIONS: string[] = core.getInput('extensions').split(',')
 
-    const options: GitHubOptions = {
+    const downloader: GitHubDownloader = new GitHubDownloader({
+      GH_TOKEN: GH_TOKEN,
       repository: {
         repository: REPOSITORY,
-        organization: ORGANIZATION
+        organization: ORGANIZATION,
+        sha: SHA || undefined
       },
-      GH_TOKEN: GH_TOKEN,
       input_path: INPUT_PATH,
-      filter: {}
-    }
-
-    if (SHA) {
-      options.repository.sha = SHA
-    }
-
-    if (OUTPUT_PATH) {
-      options.output_path = OUTPUT_PATH
-    }
-
-    if (EXTENSIONS) {
-      options.filter!.extensions = EXTENSIONS
-    }
-
-    if (FILES) {
-      options.filter!.files = FILES
-    }
-
-    const downloader: GitHubDownloader = new GitHubDownloader(options)
+      output_path: OUTPUT_PATH || undefined,
+      filter: {
+        files: FILES || undefined,
+        extensions: EXTENSIONS || undefined
+      }
+    })
 
     core.debug(`Starting to download files from ${ORGANIZATION}/${REPOSITORY}`)
 
