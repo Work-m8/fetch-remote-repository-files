@@ -1,5 +1,6 @@
 import * as core from '@actions/core'
-import { GitHubDownloader } from './downloader'
+import { FILE } from 'dns'
+import { GitHubDownloader, GitHubOptions } from './downloader'
 
 export async function run(): Promise<void> {
   try {
@@ -12,20 +13,33 @@ export async function run(): Promise<void> {
     const FILES: string[] = core.getInput('files').split(',')
     const EXTENSIONS: string[] = core.getInput('extensions').split(',')
 
-    const downloader: GitHubDownloader = new GitHubDownloader({
+    const options: GitHubOptions = {
       repository: {
         repository: REPOSITORY,
-        organization: ORGANIZATION,
-        sha: SHA
+        organization: ORGANIZATION
       },
       GH_TOKEN: GH_TOKEN,
       input_path: INPUT_PATH,
-      output_path: OUTPUT_PATH,
-      filter: {
-        files: FILES,
-        extensions: EXTENSIONS
-      }
-    })
+      filter: {}
+    }
+
+    if (SHA) {
+      options.repository.sha = SHA
+    }
+
+    if (OUTPUT_PATH) {
+      options.output_path = OUTPUT_PATH
+    }
+
+    if (EXTENSIONS) {
+      options.filter!.extensions = EXTENSIONS
+    }
+
+    if (FILES) {
+      options.filter!.files = FILES
+    }
+
+    const downloader: GitHubDownloader = new GitHubDownloader(options)
 
     core.debug(`Starting to download files from ${ORGANIZATION}/${REPOSITORY}`)
 
