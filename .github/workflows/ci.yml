@@ -55,7 +55,12 @@ jobs:
         id: test-action
         uses: ./
         with:
-          milliseconds: 2000
+          organization: 'Work-m8'
+          repository: 'fetch-remote-repository-files'
+          input_path: '/'
+          extensions: '.md'
+          output_path: 'downloaded'
+
 
       - name: Print Output
         id: output
