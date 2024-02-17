@@ -57,7 +57,6 @@ jobs:
         with:
           organization: 'Work-m8'
           repository: 'fetch-remote-repository-files'
-          input_path: '/'
           extensions: '.md'
           output_path: 'downloaded'
 
